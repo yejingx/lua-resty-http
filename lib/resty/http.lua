@@ -567,10 +567,19 @@ end
 
 
 function _M.request(self, params)
+    local sock = self.sock
+
+    if params.send_timeout then
+        sock:settimeout(params.send_timeout)
+    end
+
     local res, err = self:send_request(params)
     if not res then
         return res, err
     else
+        if params.read_timeout then
+            sock:settimeout(params.read_timeout)
+        end
         return self:read_response(params)
     end
 end
